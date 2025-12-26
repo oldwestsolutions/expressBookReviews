@@ -27,9 +27,8 @@ public_users.post("/register", (req,res) => {
 public_users.get('/',async function (req, res) {
   //Write your code here
   try {
-    let listOfBooks = await new Promise((resolve, reject) => {
-      resolve(books);
-    });
+    // Using async/await with Promise to simulate asynchronous operation
+    let listOfBooks = await Promise.resolve(books);
     return res.status(200).json(listOfBooks);
   } catch (error) {
     return res.status(500).json({message: "Error fetching books"});
@@ -41,13 +40,11 @@ public_users.get('/isbn/:isbn',async function (req, res) {
   //Write your code here
   const isbn = req.params.isbn;
   try {
-    let book = await new Promise((resolve, reject) => {
-      if (books[isbn]) {
-        resolve(books[isbn]);
-      } else {
-        reject(new Error("Book not found"));
-      }
-    });
+    // Using async/await with Promise to simulate asynchronous operation
+    let book = await Promise.resolve(books[isbn]);
+    if (!book) {
+      return res.status(404).json({message: "Book not found"});
+    }
     return res.status(200).json(book);
   } catch (error) {
     return res.status(404).json({message: "Book not found"});
@@ -59,24 +56,24 @@ public_users.get('/author/:author',async function (req, res) {
   //Write your code here
   const author = req.params.author;
   try {
-    let booksByAuthor = await new Promise((resolve, reject) => {
-      const matchingBooks = [];
-      const bookKeys = Object.keys(books);
-      
-      for (let i = 0; i < bookKeys.length; i++) {
-        const key = bookKeys[i];
-        if (books[key].author === author) {
-          matchingBooks.push({isbn: key, ...books[key]});
-        }
+    // Using async/await with Promise to simulate asynchronous operation
+    const matchingBooks = [];
+    const bookKeys = Object.keys(books);
+    
+    for (let i = 0; i < bookKeys.length; i++) {
+      const key = bookKeys[i];
+      if (books[key].author === author) {
+        matchingBooks.push({isbn: key, ...books[key]});
       }
-      
-      if (matchingBooks.length > 0) {
-        resolve(matchingBooks);
-      } else {
-        reject(new Error("No books found by this author"));
-      }
-    });
-    return res.status(200).json(booksByAuthor);
+    }
+    
+    let booksByAuthor = await Promise.resolve(matchingBooks);
+    
+    if (booksByAuthor.length > 0) {
+      return res.status(200).json(booksByAuthor);
+    } else {
+      return res.status(404).json({message: "No books found by this author"});
+    }
   } catch (error) {
     return res.status(404).json({message: "No books found by this author"});
   }
@@ -87,24 +84,24 @@ public_users.get('/title/:title',async function (req, res) {
   //Write your code here
   const title = req.params.title;
   try {
-    let booksByTitle = await new Promise((resolve, reject) => {
-      const matchingBooks = [];
-      const bookKeys = Object.keys(books);
-      
-      for (let i = 0; i < bookKeys.length; i++) {
-        const key = bookKeys[i];
-        if (books[key].title === title) {
-          matchingBooks.push({isbn: key, ...books[key]});
-        }
+    // Using async/await with Promise to simulate asynchronous operation
+    const matchingBooks = [];
+    const bookKeys = Object.keys(books);
+    
+    for (let i = 0; i < bookKeys.length; i++) {
+      const key = bookKeys[i];
+      if (books[key].title === title) {
+        matchingBooks.push({isbn: key, ...books[key]});
       }
-      
-      if (matchingBooks.length > 0) {
-        resolve(matchingBooks);
-      } else {
-        reject(new Error("No books found with this title"));
-      }
-    });
-    return res.status(200).json(booksByTitle);
+    }
+    
+    let booksByTitle = await Promise.resolve(matchingBooks);
+    
+    if (booksByTitle.length > 0) {
+      return res.status(200).json(booksByTitle);
+    } else {
+      return res.status(404).json({message: "No books found with this title"});
+    }
   } catch (error) {
     return res.status(404).json({message: "No books found with this title"});
   }
